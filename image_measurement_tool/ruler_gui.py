@@ -12,7 +12,7 @@ class AppGlobalSingleton:
     """Singleton class to store global variables."""
 
     points: list[tuple[int, int]]
-    scale_factor: float | None = None
+    scale_factor_mm_per_px: float | None = None
     img: np.ndarray | None = None
     original_img: np.ndarray | None = None
 
@@ -49,12 +49,12 @@ def handle_house_event(
                 2,
             )
 
-            if app_globals.scale_factor is None:
+            if app_globals.scale_factor_mm_per_px is None:
                 try:
                     # First line sets the scale factor.
                     real_distance_str = input(
                         "Enter the real-world distance (in mm) of the line you just "
-                        "drew:",
+                        "drew: ",
                     )
                     real_distance = float(real_distance_str)
                     pixel_distance: float = float(
@@ -63,11 +63,14 @@ def handle_house_event(
                             - np.array(app_globals.points[1]),
                         ),
                     )
-                    scale_factor = real_distance / pixel_distance
-                    print(f"Scale factor set to {scale_factor:.4f} mm per pixel")
+                    app_globals.scale_factor_mm_per_px = real_distance / pixel_distance
+                    print(
+                        "Scale factor set to "
+                        f"{app_globals.scale_factor_mm_per_px:.4f} mm/pixel",
+                    )
                 except ValueError:
                     print("Invalid input. Please enter a numeric value.")
-                    app_globals.points = []  # Reset points on invalid input
+                    app_globals.points.clear()  # Reset points on invalid input
                 except:
                     raise
             else:
@@ -78,14 +81,14 @@ def handle_house_event(
                         - np.array(app_globals.points[1]),
                     ),
                 )
-                real_distance = pixel_distance * app_globals.scale_factor
+                real_distance = pixel_distance * app_globals.scale_factor_mm_per_px
                 app_globals.measurements.append(
                     (app_globals.points[0], app_globals.points[1], real_distance),
                 )
                 print(f"Measured distance: {real_distance:.2f} mm")
 
             # Clear points after two clicks
-            app_globals.points = []
+            app_globals.points.clear()
             redraw_image()
 
     elif event == cv2.EVENT_RBUTTONDOWN:
