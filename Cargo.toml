@@ -1,8 +1,10 @@
 [package]
 name = "da-image-measurement-tool"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "A reverse-engineering tool: load an image, calibrate a known dimension, and read off other dimensions in real-world units."
+repository = "https://github.com/DeflateAwning/da-image-measurement-tool"
+license = "BSD-3-Clause"
 
 [dependencies]
 eframe = { version = "0.27", default-features = false, features = ["glow", "default_fonts", "persistence"] }
