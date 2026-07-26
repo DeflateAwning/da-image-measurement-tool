@@ -60,3 +60,47 @@ impl ViewTransform {
         p.x >= 0.0 && p.y >= 0.0 && p.x <= self.image_size.x && p.y <= self.image_size.y
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn distance_computes_euclidean_length() {
+        let a = Pos2::new(0.0, 0.0);
+        let b = Pos2::new(3.0, 4.0);
+        assert_eq!(distance(a, b), 5.0);
+    }
+
+    #[test]
+    fn screen_to_image_inverts_image_to_screen() {
+        let transform = ViewTransform {
+            screen_rect: Rect::from_min_size(Pos2::new(10.0, 20.0), Vec2::new(200.0, 100.0)),
+            image_size: Vec2::new(400.0, 200.0),
+            zoom: 1.5,
+            pan: Vec2::new(5.0, -3.0),
+        };
+
+        let original = Pos2::new(123.0, 45.0);
+        let screen = transform.image_to_screen(original);
+        let round_tripped = transform.screen_to_image(screen);
+
+        assert!((round_tripped.x - original.x).abs() < 1e-3);
+        assert!((round_tripped.y - original.y).abs() < 1e-3);
+    }
+
+    #[test]
+    fn in_bounds_respects_image_edges() {
+        let transform = ViewTransform {
+            screen_rect: Rect::from_min_size(Pos2::ZERO, Vec2::new(100.0, 100.0)),
+            image_size: Vec2::new(50.0, 80.0),
+            zoom: 1.0,
+            pan: Vec2::ZERO,
+        };
+
+        assert!(transform.in_bounds(Pos2::new(0.0, 0.0)));
+        assert!(transform.in_bounds(Pos2::new(50.0, 80.0)));
+        assert!(!transform.in_bounds(Pos2::new(-1.0, 0.0)));
+        assert!(!transform.in_bounds(Pos2::new(50.1, 80.0)));
+    }
+}
