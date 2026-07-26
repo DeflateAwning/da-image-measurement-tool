@@ -440,7 +440,7 @@ impl MeasurementApp {
                 draw_marker(&painter, transform.image_to_screen(b), gold);
                 painter.line_segment(
                     [transform.image_to_screen(a), transform.image_to_screen(b)],
-                    Stroke::new(2.0, gold),
+                    Stroke::new(2.0_f32, gold),
                 );
                 if let Some(calib) = self.current_calibration() {
                     let mid = transform.image_to_screen(midpoint(a, b));
@@ -465,7 +465,7 @@ impl MeasurementApp {
                 let sb = transform.image_to_screen(m.point_b);
                 draw_marker(&painter, sa, color);
                 draw_marker(&painter, sb, color);
-                painter.line_segment([sa, sb], Stroke::new(2.0, color));
+                painter.line_segment([sa, sb], Stroke::new(2.0_f32, color));
                 let mid = transform.image_to_screen(midpoint(m.point_a, m.point_b));
                 let label_text = match m.real_distance {
                     Some(real) => format!("{}: {:.3} {}", m.label, real, m.unit),
@@ -493,7 +493,7 @@ impl MeasurementApp {
                         draw_marker(&painter, sa, color);
                         painter.line_segment(
                             [sa, hover_pos],
-                            Stroke::new(1.5, color.gamma_multiply(0.7)),
+                            Stroke::new(1.5_f32, color.gamma_multiply(0.7)),
                         );
                         let img_pt = transform.screen_to_image(hover_pos);
                         let px_dist = crate::geometry::distance(a, img_pt);
@@ -522,9 +522,9 @@ impl MeasurementApp {
 
 fn draw_marker(painter: &egui::Painter, p: Pos2, color: Color32) {
     let r = 4.5;
-    painter.circle_stroke(p, r, Stroke::new(2.0, color));
-    painter.line_segment([p - Vec2::new(r + 3.0, 0.0), p + Vec2::new(r + 3.0, 0.0)], Stroke::new(1.0, color));
-    painter.line_segment([p - Vec2::new(0.0, r + 3.0), p + Vec2::new(0.0, r + 3.0)], Stroke::new(1.0, color));
+    painter.circle_stroke(p, r, Stroke::new(2.0_f32, color));
+    painter.line_segment([p - Vec2::new(r + 3.0, 0.0), p + Vec2::new(r + 3.0, 0.0)], Stroke::new(1.0_f32, color));
+    painter.line_segment([p - Vec2::new(0.0, r + 3.0), p + Vec2::new(0.0, r + 3.0)], Stroke::new(1.0_f32, color));
 }
 
 fn midpoint(a: Pos2, b: Pos2) -> Pos2 {
